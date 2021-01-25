@@ -1,3 +1,4 @@
+import numpy as np
 alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
 
 # Caeser Cipher
@@ -16,6 +17,8 @@ def CaeserCipher(caeserPlaintext, caeserKeys):
 
 
 # PlayFair Cipher
+
+
 def convert(s):
     new = ""
     for x in s:
@@ -33,12 +36,10 @@ def generatematrix(key):
         if e not in matrix:
             matrix.append(e)
 
-    # initialize a new list. Is there any elegant way to do that?
     matrix_group = []
     for e in range(5):
         matrix_group.append('')
 
-    # Break it into 5*5
     matrix_group[0] = matrix[0:5]
     matrix_group[1] = matrix[5:10]
     matrix_group[2] = matrix[10:15]
@@ -111,41 +112,24 @@ def encrypt(message, key):
 
 
 L = []
+keyy = input("Enter Caeser Cipher Key: ")
 file1 = open("caesar_out.txt", "w")
-L.append("****** Key=3 *******")
+L.append("******Key=")
+L.append(keyy)
+L.append("*******")
 L.append('\n')
 for line in open('caesar_plain.txt'):
     if line[-1] == '\n':
-        linemodified = CaeserCipher(line, 3)
+        linemodified = CaeserCipher(line, keyy)
         L.append(linemodified[:len(linemodified)-1])
         L.append('\n')
     else:
         L.append(CaeserCipher(line, 3))
         L.append('\n')
 L.append('\n')
-L.append("****** Key=6 *******")
-L.append('\n')
-for line in open('caesar_plain.txt'):
-    if line[-1] == '\n':
-        linemodified = CaeserCipher(line, 6)
-        L.append(linemodified[:len(linemodified)-1])
-        L.append('\n')
-    else:
-        L.append(CaeserCipher(line, 6))
-        L.append('\n')
-L.append('\n')
-L.append("****** Key=12 *******")
-L.append('\n')
-for line in open('caesar_plain.txt'):
-    if line[-1] == '\n':
-        linemodified = CaeserCipher(line, 12)
-        L.append(linemodified[:len(linemodified)-1])
-        L.append('\n')
-    else:
-        L.append(CaeserCipher(line, 12))
-        L.append('\n')
 file1.writelines(L)
 file1.close()
+
 Key = input("Enter Key of playfair: ")
 file2 = open("playfair_out.txt", "w")
 t = []
@@ -154,3 +138,62 @@ for line in open('playfair_plain.txt'):
     t.append('\n')
 file2.writelines(t)
 file2.close
+
+
+# Hill Cipher
+alphabetic = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+map_char_to_index = dict(zip(alphabetic, range(len(alphabetic))))
+map_index_to_char = dict(zip(range(len(alphabetic)), alphabetic))
+
+
+def Mod_inverse_of_Matrix(arr, modul):
+    determinent = int(np.round(np.linalg.determinent(arr)))
+    determinent_inverse = egcd(determinent, modul)[1] % modul
+    Mat_Inv_Mod = determinent_inverse * \
+        np.round(determinent*np.linalg.inv(arr)).astype(int) % modul
+    return Mat_Inv_Mod
+
+
+def Encryption(message, key):
+    After_Encryption = []
+    message_indexed = []
+    for char in message:
+        message_indexed.append(map_char_to_index[char])
+    splitting_of_key = [message_indexed[i:i+int(key.shape[0])]
+                        for i in range(0, len(message_indexed), int(key.shape[0]))]
+    for z in splitting_of_key:
+        z = np.transpose(np.asarray(z))[:, np.newaxis]
+        while z.shape[0] != key.shape[0]:
+            z = np.append(z, map_char_to_index['x'])[:, np.newaxis]
+        nums = np.dot(key, z) % len(alphabetic)
+        n = nums.shape[0]
+        for j in range(n):
+            num = int(nums[j, 0])
+            After_Encryption += map_index_to_char[num]
+    return After_Encryption
+
+
+rows = int(input("Enter number of rows in the Key_matrix: "))
+columns = int(input("Enter number of columns in the Key_matrix: "))
+key = []
+print("Enter the %s x %s matrix: " % (rows, columns))
+for i in range(rows):
+    key.append(list(map(int, input().rstrip().split())))
+
+# print(convert(Encryption(Message, np.array(key))).upper())
+if rows == 2:
+    file3 = open("Hill_out.txt", "w")
+    f = []
+    for line in open('hill_plain_2x2.txt'):
+        f.append(convert(Encryption(line.rstrip(), np.array(key))).upper())
+        f.append('\n')
+    file3.writelines(f)
+    file3.close()
+elif rows == 3:
+    file3 = open("Hill_out.txt", "w")
+    f = []
+    for line in open('hill_plain_3x3.txt'):
+        f.append(convert(Encryption(line.rstrip(), np.array(key))).upper())
+        f.append('\n')
+    file3.writelines(f)
+    file3.close()
