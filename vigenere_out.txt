@@ -1,4 +1,4 @@
-*****Key_Mode: Auto*****
+*****Key_Mode: Repeating*****
 PHCQENIA
 OIOJPSFA
 QNVIPELW
