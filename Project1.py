@@ -1,3 +1,4 @@
+"""
 import numpy as np
 alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
 
@@ -197,3 +198,48 @@ elif rows == 3:
         f.append('\n')
     file3.writelines(f)
     file3.close()
+"""
+
+# vigenere-cipher
+
+alphabetic = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+char_to_index = dict(zip(alphabetic, range(len(alphabetic))))
+index_to_char = dict(zip(range(len(alphabetic)), alphabetic))
+
+
+def GetKey(string, key):
+    key = list(key)
+    if len(string) == len(key):
+        return(key)
+    else:
+        for i in range(len(string) -
+                       len(key)):
+            key.append(key[i % len(key)])
+    return("" . join(key))
+
+
+def vigenere_cipher(string, key, Mood):
+    cipher = []
+    if Mood == "Ture" or Mood == "true":
+        for i in range(len(string)):
+            x = (char_to_index[string[i]] +
+                 char_to_index[key[i]]) % 26
+            cipher.append(index_to_char[x])
+        return("" . join(cipher))
+
+  #  elif Mood == "false" or Mood == "FALSE":
+
+    return("" . join(cipher))
+
+
+keyword = input("Enter Vignere Key: ")
+mood = input("Enter Vignere mode: ")
+file4 = open("vigenere_out.txt", "w")
+a = []
+for line in open('vigenere_plain.txt'):
+    a.append(vigenere_cipher(line.upper().rstrip(), GetKey(line,
+                                                           keyword.upper()).upper(), mood))
+    a.append('\n')
+    # print(GetKey(line, keyword.upper()).upper())
+file4.writelines(a)
+file4.close()
