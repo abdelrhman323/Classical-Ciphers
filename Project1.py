@@ -254,23 +254,23 @@ file4.close()
 # Vernam Cipher
 
 
-def Vernam(pl_text, key):
-    r = ""
-    p = 0
-    for char in pl_text:
-        r = r + chr(ord(char) ^ ord(key[p]))
-        p = p + 1
-        if p == len(key):
-            p = 0
-    return r
+def VernamCipherFunction(text, key):
+    result = ""
+    ptr = 0
+    for char in text:
+        result = result + chr(ord(char) ^ ord(key[ptr]))
+        ptr = ptr + 1
+        if ptr == len(key):
+            ptr = 0
+    return result
 
 
-keyword = input("Enter Vignere Key: ")
+keyword = input("Enter Vernam Key: ")
 file5 = open("vernam_out.txt", "w")
 q = []
 for line in open('vernam_plain.txt'):
-    q.append(Vernam(line.replace(" ", "").rstrip().upper(),
-                    GetKey(line.replace(" ", "").rstrip().upper(), keyword.upper(), mood)))
+    q.append(vigenere_cipher(line.replace(" ", "").rstrip().upper(),
+                             GetKey(line.replace(" ", "").rstrip().upper(), keyword.upper(), mood)))
     q.append('\n')
 file5.writelines(q)
 file5.close()
